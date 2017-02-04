@@ -1,5 +1,5 @@
 class Dealer
-  attr_accessor :hand, :end_turn
+  attr_reader :hand, :end_turn
 
   def initialize
     @hand = []
@@ -26,9 +26,11 @@ class Dealer
 
   def find_move(deck)
     if value < 17 #|| (value == 17 && @hand.include?("A"))
-      puts "\nDealer has " + @hand.inspect + " with a value of #{value}"
+      puts "\nDealer has " + @hand.to_s.colorize(:red) + " with a value of " + value.to_s.colorize(:red)
+      sleep(1)
       hit(deck)
-      puts "Dealer draws a #{@hand[-1]}"
+      puts "\nDealer draws a " + @hand[-1].to_s.colorize(:red)
+      sleep(1)
     else
       stand
     end
@@ -67,7 +69,7 @@ class Dealer
       end
     end
 
-    value > 21 ? true : false
+    value > 21
   end
 
 end

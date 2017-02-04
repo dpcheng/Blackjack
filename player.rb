@@ -1,5 +1,5 @@
 class Player
-  attr_accessor :hand, :end_turn
+  attr_reader :hand, :end_turn
 
   def initialize
     @hand = []
@@ -65,7 +65,7 @@ class Player
       end
     end
 
-    value > 21 ? true : false
+    value > 21
   end
 
 end

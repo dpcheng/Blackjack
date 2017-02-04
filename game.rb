@@ -1,11 +1,9 @@
 require_relative "deck"
 require_relative "player"
 require_relative "dealer"
-
+require "colorize"
 
 class Game
-  attr_accessor :dealer
-
   def initialize(deck, dealer, player)
     @deck = deck
     @dealer = dealer
@@ -24,7 +22,7 @@ class Game
       puts "Dealing new hand..."
       deal
 
-      puts "Dealer has #{@dealer.hand[0]} showing."
+      puts "Dealer has " + @dealer.hand[0].to_s.colorize(:red) + " showing."
       if @dealer.value == 21 #&& @dealer.hand[0] != "A"
         puts "Dealer has blackjack"
         print "\nPress enter for a new hand. Type \"stop\" to stop playing. "
@@ -33,8 +31,9 @@ class Game
         next
       end
 
-      puts "\nYou have " + @player.hand.inspect
-      puts "Value: #{@player.value}"
+      puts "\nYou have " + @player.hand.to_s.colorize(:blue)
+      puts "Value: " + @player.value.to_s.colorize(:blue)
+      sleep(1)
 
       if @player.value == 21
         puts "Winner Winner Chicken Dinner!"
@@ -50,9 +49,10 @@ class Game
         case gets.chomp.downcase
         when "h"
           @player.hit(@deck)
-          puts "\nYou drew a #{@player.hand[-1]}"
-          puts "You have " + @player.hand.inspect
-          puts "Value: #{@player.value}"
+          puts "\nYou drew a " + @player.hand[-1].to_s.colorize(:blue)
+          puts "You have " + @player.hand.to_s.colorize(:blue)
+          puts "Value: " + @player.value.to_s.colorize(:blue)
+          sleep(1)
         when "s"
           @player.stand
         end
@@ -87,15 +87,15 @@ class Game
   end
 
   def winner
-    puts "\nDealer has " + @dealer.hand.inspect + " with a value of #{@dealer.value}"
+    puts "\nDealer has " + @dealer.hand.to_s.colorize(:red) + " with a value of " + @dealer.value.to_s.colorize(:red)
     if @player.bust?
-      puts "You busted with a #{@player.value}"
+      puts "You busted with a " + @player.value.to_s.colorize(:blue)
     elsif @dealer.bust?
       puts "Dealer busted, you win!"
     elsif @dealer.value == @player.value
       puts "Your hand pushes"
     elsif @dealer.value > @player.value
-      puts "Dealer wins with a #{@dealer.value}"
+      puts "Dealer wins with a " + @dealer.value.to_s.colorize(:red)
     else
       puts "You win this hand!"
     end
