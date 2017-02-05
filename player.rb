@@ -1,6 +1,6 @@
 class Player
-  attr_reader :hand
-  attr_accessor :end_turn
+  attr_reader :end_turn
+  attr_accessor :hand
   def initialize
     @hand = []
     @end_turn = false

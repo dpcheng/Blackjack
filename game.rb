@@ -8,6 +8,7 @@ class Game
     @deck = deck
     @dealer = dealer
     @player = player
+    @player_total = []
   end
 
   def play
@@ -61,11 +62,12 @@ class Game
     case gets.chomp.downcase
     when "h"
       @player.hit(@deck)
-      puts "\nYou drew a " + @player.hand[-1].to_s.colorize(:blue)
-      puts "You have " + @player.hand.to_s.colorize(:blue)
-      puts "Value: " + @player.value.to_s.colorize(:blue)
-      sleep(1)
+      player_last_card
     when "s"
+      @player.stand
+    when "dd"
+      @player.hit(@deck)
+      player_last_card
       @player.stand
     when "sp"
       if @hand.count == 2 && @hand[0] == @hand[1]
@@ -76,9 +78,17 @@ class Game
           puts "Value: " + @player.hand.to_s.colorize(:blue)
           player_makes_choice until @player.end_turn
         end
+        @player_total << @player.value
         @player.next_hand
       end
     end
+  end
+
+  def player_last_card
+    puts "\nYou drew a " + @player.hand[-1].to_s.colorize(:blue)
+    puts "You have " + @player.hand.to_s.colorize(:blue)
+    puts "Value: " + @player.value.to_s.colorize(:blue)
+    sleep(1)
   end
 
   def shuffle_deck
@@ -103,16 +113,19 @@ class Game
 
   def winner
     puts "\nDealer has " + @dealer.hand.to_s.colorize(:red) + " with a value of " + @dealer.value.to_s.colorize(:red)
-    if @player.bust?
-      puts "You busted with a " + @player.value.to_s.colorize(:blue)
-    elsif @dealer.bust?
-      puts "Dealer busted, you win!"
-    elsif @dealer.value == @player.value
-      puts "Your hand pushes"
-    elsif @dealer.value > @player.value
-      puts "Dealer wins with a " + @dealer.value.to_s.colorize(:red)
-    else
-      puts "You win this hand!"
+    @player_total.each do |total|
+      @player.hand = total
+      if @player.bust?
+        puts "You busted with a " + @player.value.to_s.colorize(:blue)
+      elsif @dealer.bust?
+        puts "Dealer busted, you win!"
+      elsif @dealer.value == @player.value
+        puts "Your hand pushes"
+      elsif @dealer.value > @player.value
+        puts "Dealer wins with a " + @dealer.value.to_s.colorize(:red)
+      else
+        puts "You win this hand!"
+      end
     end
   end
 
