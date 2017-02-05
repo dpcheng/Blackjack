@@ -1,6 +1,6 @@
 class Player
-  attr_reader :hand, :end_turn
-
+  attr_reader :hand
+  attr_accessor :end_turn
   def initialize
     @hand = []
     @end_turn = false
@@ -25,10 +25,13 @@ class Player
     @end_turn = true
   end
 
+  def next_hand
+    @end_turn = false
+    @hands = @temporary_hands.shift
+  end
+
   def split
-    if @hand.count == 2 && @hand[0] == @hand[1]
-      @temporary_hands << @hands.pop
-    end
+    @temporary_hands << @hands.pop
   end
 
   def double_down

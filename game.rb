@@ -14,10 +14,7 @@ class Game
     introduction
     loop do
 
-      if @deck.deck.count < 10
-        puts "Deck is reshuffled"
-        @deck = Deck.new
-      end
+      shuffle_deck if @deck.deck.count < 10
 
       puts "Dealing new hand..."
       deal
@@ -43,25 +40,7 @@ class Game
         next
       end
 
-      until @player.bust? || @player.end_turn
-        puts "\nWhat would you like to do?"
-        print "\"h\" for hit. \"s\" for stand. \"sp\" for split."
-        case gets.chomp.downcase
-        when "h"
-          @player.hit(@deck)
-          puts "\nYou drew a " + @player.hand[-1].to_s.colorize(:blue)
-          puts "You have " + @player.hand.to_s.colorize(:blue)
-          puts "Value: " + @player.value.to_s.colorize(:blue)
-          sleep(1)
-        when "s"
-          @player.stand
-        when "sp"
-          @player.split
-          puts "\mNow playing " + (@player.temporary_hands.count + 1).to_s.colorize(:blue) + " hands"
-          puts "You have a " + @player.hand.to_s.colorize(:blue)
-          puts "Value: " + @player.hand.to_s.colorize(:blue)
-        end
-      end
+      player_makes_choice until @player.bust? || @player.end_turn
 
       if @player.bust? == false
         @dealer.find_move(@deck) until @dealer.end_turn
@@ -74,6 +53,37 @@ class Game
 
     end
 
+  end
+
+  def player_makes_choice
+    puts "\nWhat would you like to do?"
+    print "\"h\" for hit. \"s\" for stand. \"sp\" for split."
+    case gets.chomp.downcase
+    when "h"
+      @player.hit(@deck)
+      puts "\nYou drew a " + @player.hand[-1].to_s.colorize(:blue)
+      puts "You have " + @player.hand.to_s.colorize(:blue)
+      puts "Value: " + @player.value.to_s.colorize(:blue)
+      sleep(1)
+    when "s"
+      @player.stand
+    when "sp"
+      if @hand.count == 2 && @hand[0] == @hand[1]
+        @player.split
+        until @player.temporary_hands.count == 0
+          puts "\mNow playing " + (@player.temporary_hands.count + 1).to_s.colorize(:blue) + " hands"
+          puts "You have a " + @player.hand.to_s.colorize(:blue)
+          puts "Value: " + @player.hand.to_s.colorize(:blue)
+          player_makes_choice until @player.end_turn
+        end
+        @player.next_hand
+      end
+    end
+  end
+
+  def shuffle_deck
+    puts "Deck is reshuffled"
+    @deck = Deck.new
   end
 
   def deal
