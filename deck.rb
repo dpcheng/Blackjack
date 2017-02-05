@@ -1,8 +1,8 @@
 class Deck
   attr_reader :deck
 
-  def initialize(decks_amount = 40)
-    @deck = ["Q", "K"] * decks_amount
+  def initialize(decks_amount = 24)
+    @deck = ["A", 2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K"] * decks_amount
     @deck.shuffle!
   end
 

@@ -75,11 +75,8 @@ class Game
     when "sp"
       if @player.hand.count == 2 && @player.hand[0] == @player.hand[1]
         @player.split
-        until @player.temporary_hands.count == 0
+        while @player.hand.count == 1
           puts "\nNow playing " + (@player.temporary_hands.count + 1).to_s.colorize(:blue) + " hands"
-          # puts "You have a " + @player.hand.to_s.colorize(:blue)
-          # puts "Value: " + @player.value.to_s.colorize(:blue)
-          # sleep(1)
           @player.hit(@deck)
           player_last_card
           player_makes_choice until @player.end_turn || @player.bust?
