@@ -45,7 +45,7 @@ class Game
 
       until @player.bust? || @player.end_turn
         puts "\nWhat would you like to do?"
-        print "\"h\" for hit. \"s\" for stand. "
+        print "\"h\" for hit. \"s\" for stand. \"sp\" for split."
         case gets.chomp.downcase
         when "h"
           @player.hit(@deck)
@@ -55,6 +55,11 @@ class Game
           sleep(1)
         when "s"
           @player.stand
+        when "sp"
+          @player.split
+          puts "\mNow playing " + (@player.temporary_hands.count + 1).to_s.colorize(:blue) + " hands"
+          puts "You have a " + @player.hand.to_s.colorize(:blue)
+          puts "Value: " + @player.hand.to_s.colorize(:blue)
         end
       end
 

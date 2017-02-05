@@ -29,7 +29,6 @@ class Player
     if @hand.count == 2 && @hand[0] == @hand[1]
       @temporary_hands << @hands.pop
     end
-    hit(deck)
   end
 
   def double_down
