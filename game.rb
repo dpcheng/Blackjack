@@ -42,7 +42,7 @@ class Game
       end
 
       player_makes_choice until @player.bust? || @player.end_turn
-      @player_total << @player.value
+
 
       if @player.bust? == false
         @dealer.find_move(@deck) until @dealer.end_turn
@@ -65,10 +65,12 @@ class Game
       @player.hit(@deck)
       player_last_card
     when "s"
+      @player_total << @player.value
       @player.stand
     when "dd"
       @player.hit(@deck)
       player_last_card
+      @player_total << @player.value
       @player.stand
     when "sp"
       if @player.hand.count == 2 && @player.hand[0] == @player.hand[1]
@@ -80,9 +82,8 @@ class Game
           # sleep(1)
           @player.hit(@deck)
           player_last_card
-          player_makes_choice until @player.end_turn
-          @player_total << @player.value
-          @player.next_hand
+          player_makes_choice until @player.end_turn || @player.bust?
+          @player.next_hand unless @player.temporary_hands.count == 0
         end
       end
     end
