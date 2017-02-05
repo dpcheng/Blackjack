@@ -25,7 +25,9 @@ class Player
   end
 
   def split
+    if @hand.count == 2 && @hand[0] == @hand[1]
 
+    end
   end
 
   def double_down
