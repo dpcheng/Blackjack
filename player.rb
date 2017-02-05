@@ -1,5 +1,6 @@
+require "byebug"
 class Player
-  attr_reader :end_turn
+  attr_reader :end_turn, :temporary_hands
   attr_accessor :hand
   def initialize
     @hand = []
@@ -27,11 +28,11 @@ class Player
 
   def next_hand
     @end_turn = false
-    @hands = @temporary_hands.shift
+    @hand = [@temporary_hands.shift]
   end
 
   def split
-    @temporary_hands << @hands.pop
+    @temporary_hands << @hand.pop
   end
 
   def double_down
@@ -39,15 +40,15 @@ class Player
   end
 
   def value
-    temporary_hand = []
+    sorted_hand = []
     aces = 0
     @hand.each do |card|
-      card.to_s == "A" ? aces += 1 : temporary_hand << card
+      card.to_s == "A" ? aces += 1 : sorted_hand << card
     end
 
-    aces.times { temporary_hand << "A" }
+    aces.times { sorted_hand << "A" }
 
-    temporary_hand.inject(0) do |sum, card|
+    sorted_hand.inject(0) do |sum, card|
       if card.to_s == "A" && sum < 11
         sum + 11
       elsif card.to_s == "A" && sum >= 11
@@ -61,16 +62,6 @@ class Player
   end
 
   def bust?
-    value = @hand.inject(0) do |sum, card|
-      if card.to_s == "A"
-        sum + 1
-      elsif "JQK".include?(card.to_s)
-        sum + 10
-      else
-        sum + card
-      end
-    end
-
     value > 21
   end
 

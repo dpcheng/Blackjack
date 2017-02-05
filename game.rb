@@ -22,7 +22,7 @@ class Game
 
       puts "Dealer has " + @dealer.hand[0].to_s.colorize(:red) + " showing."
       if @dealer.value == 21 #&& @dealer.hand[0] != "A"
-        puts "Dealer has blackjack"
+        puts "Dealer has blackjack" + @dealer.hand.to_s.colorize(:red)
         print "\nPress enter for a new hand. Type \"stop\" to stop playing. "
         break if gets.chomp.downcase == "stop"
         system("clear")
@@ -42,12 +42,13 @@ class Game
       end
 
       player_makes_choice until @player.bust? || @player.end_turn
+      @player_total << @player.value
 
       if @player.bust? == false
         @dealer.find_move(@deck) until @dealer.end_turn
       end
       winner
-
+      @player_total = []
       print "\nPress enter for a new hand. Type \"stop\" to stop playing. "
       break if gets.chomp.downcase == "stop"
       system("clear")
@@ -58,7 +59,7 @@ class Game
 
   def player_makes_choice
     puts "\nWhat would you like to do?"
-    print "\"h\" for hit. \"s\" for stand. \"sp\" for split."
+    print "\"h\" for hit. \"s\" for stand. \"sp\" for split. \"dd\" for double-down. "
     case gets.chomp.downcase
     when "h"
       @player.hit(@deck)
@@ -70,16 +71,19 @@ class Game
       player_last_card
       @player.stand
     when "sp"
-      if @hand.count == 2 && @hand[0] == @hand[1]
+      if @player.hand.count == 2 && @player.hand[0] == @player.hand[1]
         @player.split
         until @player.temporary_hands.count == 0
-          puts "\mNow playing " + (@player.temporary_hands.count + 1).to_s.colorize(:blue) + " hands"
-          puts "You have a " + @player.hand.to_s.colorize(:blue)
-          puts "Value: " + @player.hand.to_s.colorize(:blue)
+          puts "\nNow playing " + (@player.temporary_hands.count + 1).to_s.colorize(:blue) + " hands"
+          # puts "You have a " + @player.hand.to_s.colorize(:blue)
+          # puts "Value: " + @player.value.to_s.colorize(:blue)
+          # sleep(1)
+          @player.hit(@deck)
+          player_last_card
           player_makes_choice until @player.end_turn
+          @player_total << @player.value
+          @player.next_hand
         end
-        @player_total << @player.value
-        @player.next_hand
       end
     end
   end
@@ -114,17 +118,16 @@ class Game
   def winner
     puts "\nDealer has " + @dealer.hand.to_s.colorize(:red) + " with a value of " + @dealer.value.to_s.colorize(:red)
     @player_total.each do |total|
-      @player.hand = total
-      if @player.bust?
+      if total > 21
         puts "You busted with a " + @player.value.to_s.colorize(:blue)
       elsif @dealer.bust?
-        puts "Dealer busted, you win!"
-      elsif @dealer.value == @player.value
-        puts "Your hand pushes"
-      elsif @dealer.value > @player.value
+        puts "Dealer busted with a " + @dealer.value.to_s.colorize(:red) + ", you win!"
+      elsif @dealer.value == total
+        puts "Your hand pushes with a " + total.to_s.colorize(:blue)
+      elsif @dealer.value > total
         puts "Dealer wins with a " + @dealer.value.to_s.colorize(:red)
       else
-        puts "You win this hand!"
+        puts "You win this hand with a " + total.to_s.colorize(:blue) + "!"
       end
     end
   end
