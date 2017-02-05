@@ -4,6 +4,7 @@ class Player
   def initialize
     @hand = []
     @end_turn = false
+    @temporary_hands = []
   end
 
   def blackjack?
@@ -26,8 +27,9 @@ class Player
 
   def split
     if @hand.count == 2 && @hand[0] == @hand[1]
-
+      @temporary_hands << @hands.pop
     end
+    hit(deck)
   end
 
   def double_down
